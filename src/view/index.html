@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search page</title>
+    <link rel="stylesheet" type="text/css" href="../css/search.css">
+</head>
+<body>
+
+<div class="main-screen">
+    <div class="logo">
+        <h1>Costume Search Tool</h1>
+    </div>
+
+    <div class="form-search">
+        <!-- todo: remove form from here. please -->
+        <form action="javascript:void(0)">
+            <input type="text" name="query" id="query" size="30" class="from-search-input-field"
+                   placeholder="Search here...">
+            <!-- todo: please use this convention with ids: search-button -->
+            <input id="searchButton" class="from-search-button" type="submit" value="GO!">
+        </form>
+    </div>
+
+    <div class="search-result">
+        <!-- todo: avoid using left\right names in classes -->
+
+        <div id="search-result-left" class="search-result-left">
+            <ul id="search-result-left-ul" class="search-result-ul">
+            </ul>
+        </div>
+        <div id="search-result-right" class="search-result-right">
+            <ul id="search-result-right-ul" class="search-result-ul">
+            </ul>
+        </div>
+    </div>
+</div>
+<div id="footer">
+    This site uses the following APIs: <a href="http://www.google.com">click here</a>
+</div>
+
+<!-- <script type="text/javascript" src="bundle.js" charset="utf-8"></script> -->
+<script src="../../bundle.js"></script>
+
+</body>
+</html>
