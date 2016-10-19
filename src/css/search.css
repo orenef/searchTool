@@ -28,11 +28,11 @@ body {
 
 }
 
-.from-search-input-field {
+.form-search-input-field {
     font-size: 1.3em;
 }
 
-.from-search-button {
+.form-search-button {
     font-size: 1.3em;
 }
 
@@ -48,14 +48,14 @@ body {
 
 }
 
-.search-result-left {
+.search-result-movies {
     margin-right: 2em;
     min-width: 45%;
     max-width: 45%;
 
 }
 
-.search-result-right {
+.search-result-music {
     min-width: 45%;
     max-width: 45%;
 }

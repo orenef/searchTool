@@ -132,7 +132,7 @@ export default class MySearch {
     //add functionality to the Go! button.
     constructor() {
 
-        document.getElementById('searchButton').onclick = function () {
+        document.getElementById('search-button').onclick = function () {
             let query = document.getElementById('query').value;
 
             // clears the current view - todo: separate into another method + use one-liners

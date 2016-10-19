@@ -1,2 +1,4 @@
 .idea
 node_modules/
+search_api.iml
+bundle.js
