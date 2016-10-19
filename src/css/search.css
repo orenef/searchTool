@@ -5,16 +5,11 @@
     width: 100%;
 }
 
-body {
-    height: 100%;
-}
-
 .main-screen {
-    height: 100%;
+
 }
 
 .logo {
-
     color: blueviolet;
     display: flex;
     justify-content: center;
@@ -22,10 +17,8 @@ body {
 }
 
 .form-search {
-
     display: flex;
     justify-content: center;
-
 }
 
 .form-search-input-field {
@@ -37,18 +30,15 @@ body {
 }
 
 .search-result {
-
     display: flex;
     justify-content: space-between;
-    /*align-items: center;*/
     margin: 2em 2em;
     overflow-y: auto;
-    /*height: 10%;*/
     position: relative;
 
 }
 
-.search-result-movies {
+.search-result-movie {
     margin-right: 2em;
     min-width: 45%;
     max-width: 45%;
@@ -74,7 +64,6 @@ body {
 
 .search-result-li {
     padding: 10px;
-    /*overflow: auto;*/
     word-wrap: break-word;
 
     opacity: 0;
