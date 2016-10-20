@@ -11,7 +11,11 @@ export function movieSearch(query) {
             url: `http://www.omdbapi.com/?s='${query}&y=&plot=short&r=json`,
         });
 }
-
+/**
+ * This method extract from fullData the relevant data to present. AKA: title and link.
+ * @param fullData
+ * @returns {Array}
+ */
 export function parseMovieReturnData(fullData) {
     let searchResultFormat = [];
     let dataInJsonFormat = JSON.parse(fullData);

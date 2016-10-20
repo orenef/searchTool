@@ -5,8 +5,10 @@ import {movieSearch, parseMovieReturnData}  from './omdbAPI';
 export default class MySearch {
 
     constructor() {
+
         this.movieList = 'search-result-movie-ul';
         this.musicList = 'search-result-music-ul';
+        //The key location - place in the  screen to display the API response
         this.searchAPIConfigruation = {
             'freemusicarchive': {
                 type: 'freemusicarchive',
@@ -23,8 +25,8 @@ export default class MySearch {
         };
 
         //add functionality to the Go! button.
-        var searchMoviesList = document.getElementById(this.movieList);
-        var searchMusicsList = document.getElementById(this.musicList);
+        let searchMoviesList = document.getElementById(this.movieList);
+        let searchMusicsList = document.getElementById(this.musicList);
         document.getElementById('search-button').onclick = function () {
             let query = document.getElementById('query').value;
             this.clearResultsLists(searchMoviesList, searchMusicsList);
@@ -39,6 +41,7 @@ export default class MySearch {
         }.bind(this);
     }
 
+    //Helping method that create the title of the result-search entity element
     crateTitleOfSearchResultEntity(searchResultEntity) {
         let searchEntityTitle = document.createElement("span");
         let titleText = document.createTextNode(searchResultEntity.title);
@@ -46,7 +49,7 @@ export default class MySearch {
         searchEntityTitle.className = "search-result-li-title";
         return searchEntityTitle;
     }
-
+    //Helping method that create the infoText (if exist) of the result-search entity element
     crateInfoTextOfSearchResultEntity(searchResultEntity) {
         if (searchResultEntity.textInfo) {
             let searchEntityTextInfo = document.createElement("p");
@@ -55,7 +58,7 @@ export default class MySearch {
             return searchEntityTextInfo;
         }
     }
-
+    //Helping method that create the link (if exist) of the result-search entity element
     crateLinkOfSearchResultEntity(searchResultEntity) {
         let linkName = '';
         if (searchResultEntity.link) {
@@ -75,7 +78,7 @@ export default class MySearch {
             return searchEntityLink;
         }
     }
-
+    //Helping method used to add single result search entity to the screen
     addSingleSearchResult(searchResultEntity) {
         let singleSearchResultElement = document.createElement("LI");
         singleSearchResultElement.className = "search-result-li";

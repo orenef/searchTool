@@ -1,8 +1,14 @@
-
+body{
+    margin: 0;
+}
 #footer {
     position: fixed;
     bottom: 0;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: lightgrey;
+    padding: 0.4em;
 }
 
 .main-screen {

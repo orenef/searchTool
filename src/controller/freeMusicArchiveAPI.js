@@ -12,7 +12,11 @@ export function trackSearch(query) {
             url: `https://freemusicarchive.org/api/trackSearch?q='${query}&limit=10`,
         });
 }
-
+/**
+ * This method extract from fullData the relevant data to present. AKA: title and textInfo.
+ * @param fullData
+ * @returns {Array}
+ */
 export function parseTracReturnData(fullData) {
     let searchResultFormat = [];
     let dataInJsonFormat = JSON.parse(fullData);
@@ -25,3 +29,4 @@ export function parseTracReturnData(fullData) {
     });
     return searchResultFormat;
 }
+
