@@ -1,56 +1,46 @@
 import "../css/search.css";
-import {trackSearch, parseTracReturnData} from './freeMusicArchiveAPI';
-import {movieSearch, parseMovieReturnData}  from './omdbAPI';
+import FreeMusicArchiveService from './freeMusicArchiveAPI';
+import OmdbMovieSearchService from './omdbAPI';
 
 export default class MySearch {
 
     constructor() {
-
-        this.movieList = 'search-result-movie-ul';
-        this.musicList = 'search-result-music-ul';
         //The key location - place in the  screen to display the API response
-        this.searchAPIConfigruation = {
-            'freemusicarchive': {
-                type: 'freemusicarchive',
-                searchFunction: trackSearch,
-                'parsingFunction': parseTracReturnData,
-                location: this.musicList
-            },
-            'omdbapi': {
-                type: 'omdbapi',
-                searchFunction: movieSearch,
-                parsingFunction: parseMovieReturnData,
-                location: this.movieList
-            }
-        };
+        let searchApisList = [
+            new FreeMusicArchiveService(),
+            new FreeMusicArchiveService(),
+            new OmdbMovieSearchService(),
+            new OmdbMovieSearchService()
+        ];
+
 
         //add functionality to the Go! button.
-        let searchMoviesList = document.getElementById(this.movieList);
-        let searchMusicsList = document.getElementById(this.musicList);
+        const divResultID = 'search-result';
+        let resultElement = document.getElementById(divResultID);
         document.getElementById('search-button').onclick = function () {
             let query = document.getElementById('query').value;
-            this.clearResultsLists(searchMoviesList, searchMusicsList);
-
-            for (let searchAPIItem in this.searchAPIConfigruation) {
-                if (!this.searchAPIConfigruation.hasOwnProperty(searchAPIItem)) continue; // skip loop if the property is from prototype
-                let singleSearchItem = this.searchAPIConfigruation[searchAPIItem];
-                let searchResponse = singleSearchItem.searchFunction(query);
-                searchResponse.then(data => this.addResultToPage(singleSearchItem.parsingFunction(data), singleSearchItem.location));
-                searchResponse.catch(err => console.error('Augh, there was an error!', err.statusText));
-            }
+            // clear previous results
+            this.clearResultsLists(divResultID);
+            searchApisList.forEach((searchAPIItem) => {
+                // go to relevant api provider and render results to screen
+                searchAPIItem.searchQuery(query)
+                    .then(data => resultElement.appendChild(this.createResultList(data)))
+                    .catch(err => console.error('Augh, there was an error!', err.statusText));
+            })
         }.bind(this);
     }
 
-    //Helping method that create the title of the result-search entity element
-    crateTitleOfSearchResultEntity(searchResultEntity) {
+    //Helping method that creates the title of the result-search entity element
+    createTitleOfSearchResultEntity(searchResultEntity) {
         let searchEntityTitle = document.createElement("span");
         let titleText = document.createTextNode(searchResultEntity.title);
         searchEntityTitle.appendChild(titleText);
         searchEntityTitle.className = "search-result-li-title";
         return searchEntityTitle;
     }
-    //Helping method that create the infoText (if exist) of the result-search entity element
-    crateInfoTextOfSearchResultEntity(searchResultEntity) {
+
+    //Helping method that creates the infoText (if exist) of the result-search entity element
+    createInfoTextOfSearchResultEntity(searchResultEntity) {
         if (searchResultEntity.textInfo) {
             let searchEntityTextInfo = document.createElement("p");
             let pText = document.createTextNode(searchResultEntity.textInfo);
@@ -58,16 +48,11 @@ export default class MySearch {
             return searchEntityTextInfo;
         }
     }
-    //Helping method that create the link (if exist) of the result-search entity element
-    crateLinkOfSearchResultEntity(searchResultEntity) {
-        let linkName = '';
+
+    //Helping method that creates the link (if exist) of the result-search entity element
+    createLinkOfSearchResultEntity(searchResultEntity) {
         if (searchResultEntity.link) {
-            // method 3
-            if (searchResultEntity.link.length > 10) {
-                linkName = searchResultEntity.link.substring(0, 45) + '...';
-            } else {
-                linkName = searchResultEntity.link;
-            }
+            let linkName = searchResultEntity.link;
             let searchEntityLink = document.createElement("p");
             let linkElement = document.createElement("a");
             let linkText = document.createTextNode(linkName);
@@ -77,33 +62,45 @@ export default class MySearch {
             searchEntityLink.appendChild(linkElement);
             return searchEntityLink;
         }
+        return null;
     }
+
     //Helping method used to add single result search entity to the screen
-    addSingleSearchResult(searchResultEntity) {
-        let singleSearchResultElement = document.createElement("LI");
+    createSingleSearchResult(searchResultEntity) {
+        let singleSearchResultElement = document.createElement("li");
         singleSearchResultElement.className = "search-result-li";
-        let title = this.crateTitleOfSearchResultEntity(searchResultEntity);
+        let title = this.createTitleOfSearchResultEntity(searchResultEntity);
         singleSearchResultElement.appendChild(title);
-        let infoText = this.crateInfoTextOfSearchResultEntity(searchResultEntity);
+        let infoText = this.createInfoTextOfSearchResultEntity(searchResultEntity);
         if (infoText) {
             singleSearchResultElement.appendChild(infoText);
         }
-        let letLinkPart = this.crateLinkOfSearchResultEntity(searchResultEntity);
+
+        let letLinkPart = this.createLinkOfSearchResultEntity(searchResultEntity);
         if (letLinkPart) {
             singleSearchResultElement.appendChild(letLinkPart)
         }
+
         return singleSearchResultElement;
     }
 
-    addResultToPage(data, location) {
-        let ulElement = document.getElementById(location);
+    createResultList(data) {
+        let ulParentElement = document.createElement("ul");
+        ulParentElement.className = 'search-result-ul';
+        let innerLIlist = document.createDocumentFragment();
         // for each search result entity crate element and add to relevant list - define by the location parameter
-        data.forEach(searchResultEntity => ulElement.appendChild(this.addSingleSearchResult(searchResultEntity)));
+        data.forEach(searchResultEntity => {
+            let searchResultItem = this.createSingleSearchResult(searchResultEntity);
+            innerLIlist.appendChild(searchResultItem);
+        });
+        ulParentElement.appendChild(innerLIlist);
+        return ulParentElement;
     }
 
     // clears the current search results view
-    clearResultsLists(searchMoviesList, searchMusicsList) {
-        searchMoviesList.innerHTML = "";
-        searchMusicsList.innerHTML = "";
+    clearResultsLists(idSelector) {
+        document.getElementById(idSelector).innerHTML = "";
     }
+
+
 }
