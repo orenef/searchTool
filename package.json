@@ -1,0 +1,20 @@
+{
+  "name": "search-tool-package",
+  "version": "1.0.0",
+  "devDependencies": {
+    "babel-core": "latest",
+    "babel-cli": "latest",
+    "babel-loader": "latest",
+    "babel-polyfill": "latest",
+    "babel-preset-es2015": "latest",
+    "css-loader": "latest",
+    "style-loader": "latest",
+    "file-loader": "latest",
+    "webpack": "latest"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  }
+}

@@ -1,20 +1,21 @@
-
+body{
+    margin: 0;
+}
 #footer {
     position: fixed;
     bottom: 0;
     width: 100%;
-}
-
-body {
-    height: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: lightgrey;
+    padding: 0.4em;
 }
 
 .main-screen {
-    height: 100%;
+
 }
 
 .logo {
-
     color: blueviolet;
     display: flex;
     justify-content: center;
@@ -22,40 +23,35 @@ body {
 }
 
 .form-search {
-
     display: flex;
     justify-content: center;
-
 }
 
-.from-search-input-field {
+.form-search-input-field {
     font-size: 1.3em;
 }
 
-.from-search-button {
+.form-search-button {
     font-size: 1.3em;
 }
 
 .search-result {
-
     display: flex;
     justify-content: space-between;
-    /*align-items: center;*/
     margin: 2em 2em;
     overflow-y: auto;
-    /*height: 10%;*/
     position: relative;
 
 }
 
-.search-result-left {
+.search-result-movie {
     margin-right: 2em;
     min-width: 45%;
     max-width: 45%;
 
 }
 
-.search-result-right {
+.search-result-music {
     min-width: 45%;
     max-width: 45%;
 }
@@ -74,7 +70,6 @@ body {
 
 .search-result-li {
     padding: 10px;
-    /*overflow: auto;*/
     word-wrap: break-word;
 
     opacity: 0;

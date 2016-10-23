@@ -115,7 +115,7 @@ mysearch = function (query) {
                 var trackDetailsSplit = trackDetails.split("]");
                 searchResultForamt.push({
                     title: trackDetailsSplit[0].substring(1),
-                    textinfo: trackDetailsSplit[1]
+                    textInfo: trackDetailsSplit[1]
                 });
             });
         }
@@ -156,9 +156,9 @@ mysearch = function (query) {
 
             liElement.appendChild(titleElement);
 
-            if (searchResultEntity.textinfo) {
+            if (searchResultEntity.textInfo) {
                 var pElement = document.createElement("p");
-                var pText = document.createTextNode(searchResultEntity.textinfo);
+                var pText = document.createTextNode(searchResultEntity.textInfo);
                 pElement.appendChild(pText);
 
                 liElement.appendChild(pElement);

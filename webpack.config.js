@@ -1,16 +1,20 @@
-/**
- * Created by Oren.Efraim on 10/18/2016.
- */
 
 module.exports = {
-    entry: "./src/index.js",
+    entry: ['babel-polyfill', './src/index.js'],
     output: {
-        path: __dirname,
+        path: __dirname +'/dist',
         filename: "bundle.js"
     },
     module: {
         loaders: [
-            { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" }
-        ]
+            { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
+            { test: /\.css$/, loader: "style-loader!css-loader" },
+            {
+                test: /\.html$/,
+                loader: "file?name=[name].[ext]",
+            },
+
+        ],
+
     }
 };

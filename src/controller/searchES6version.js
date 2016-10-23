@@ -1,156 +1,109 @@
-import makeXHRRequest from './xhrRequest';
-// todo: add import for CSS here, to make this file a standalone module
+import "../css/search.css";
+import {trackSearch, parseTracReturnData} from './freeMusicArchiveAPI';
+import {movieSearch, parseMovieReturnData}  from './omdbAPI';
 
 export default class MySearch {
 
-    parseReturnData(type, dataObject) {
-        let searchResultForamt = [];
+    constructor() {
 
-        if (type === 'freemusicarchive') {
-
-            dataObject.aRows.forEach(function (trackDetails) {
-                let trackDetailsSplit = trackDetails.split("]");
-                searchResultForamt.push({
-                    title: trackDetailsSplit[0].substring(1),
-                    textinfo: trackDetailsSplit[1]
-                });
-            });
-        }
-        else if (type === 'omdbapi') {
-
-            if (dataObject.hasOwnProperty('Search')) {
-                dataObject.Search.forEach(function (movieEntity) {
-
-                    searchResultForamt.push({
-                        title: `${movieEntity.Title} (${movieEntity.Year})`,
-                        link: movieEntity.Poster
-                    });
-                });
+        this.movieList = 'search-result-movie-ul';
+        this.musicList = 'search-result-music-ul';
+        //The key location - place in the  screen to display the API response
+        this.searchAPIConfigruation = {
+            'freemusicarchive': {
+                type: 'freemusicarchive',
+                searchFunction: trackSearch,
+                'parsingFunction': parseTracReturnData,
+                location: this.musicList
+            },
+            'omdbapi': {
+                type: 'omdbapi',
+                searchFunction: movieSearch,
+                parsingFunction: parseMovieReturnData,
+                location: this.movieList
             }
-        }
+        };
 
-        return searchResultForamt;
+        //add functionality to the Go! button.
+        let searchMoviesList = document.getElementById(this.movieList);
+        let searchMusicsList = document.getElementById(this.musicList);
+        document.getElementById('search-button').onclick = function () {
+            let query = document.getElementById('query').value;
+            this.clearResultsLists(searchMoviesList, searchMusicsList);
+
+            for (let searchAPIItem in this.searchAPIConfigruation) {
+                if (!this.searchAPIConfigruation.hasOwnProperty(searchAPIItem)) continue; // skip loop if the property is from prototype
+                let singleSearchItem = this.searchAPIConfigruation[searchAPIItem];
+                let searchResponse = singleSearchItem.searchFunction(query);
+                searchResponse.then(data => this.addResultToPage(singleSearchItem.parsingFunction(data), singleSearchItem.location));
+                searchResponse.catch(err => console.error('Augh, there was an error!', err.statusText));
+            }
+        }.bind(this);
+    }
+
+    //Helping method that create the title of the result-search entity element
+    crateTitleOfSearchResultEntity(searchResultEntity) {
+        let searchEntityTitle = document.createElement("span");
+        let titleText = document.createTextNode(searchResultEntity.title);
+        searchEntityTitle.appendChild(titleText);
+        searchEntityTitle.className = "search-result-li-title";
+        return searchEntityTitle;
+    }
+    //Helping method that create the infoText (if exist) of the result-search entity element
+    crateInfoTextOfSearchResultEntity(searchResultEntity) {
+        if (searchResultEntity.textInfo) {
+            let searchEntityTextInfo = document.createElement("p");
+            let pText = document.createTextNode(searchResultEntity.textInfo);
+            searchEntityTextInfo.appendChild(pText);
+            return searchEntityTextInfo;
+        }
+    }
+    //Helping method that create the link (if exist) of the result-search entity element
+    crateLinkOfSearchResultEntity(searchResultEntity) {
+        let linkName = '';
+        if (searchResultEntity.link) {
+            // method 3
+            if (searchResultEntity.link.length > 10) {
+                linkName = searchResultEntity.link.substring(0, 45) + '...';
+            } else {
+                linkName = searchResultEntity.link;
+            }
+            let searchEntityLink = document.createElement("p");
+            let linkElement = document.createElement("a");
+            let linkText = document.createTextNode(linkName);
+            linkElement.setAttribute("href", searchResultEntity.link);
+            linkElement.setAttribute("target", "_blank"); // use this to open in a new tab
+            linkElement.appendChild(linkText);
+            searchEntityLink.appendChild(linkElement);
+            return searchEntityLink;
+        }
+    }
+    //Helping method used to add single result search entity to the screen
+    addSingleSearchResult(searchResultEntity) {
+        let singleSearchResultElement = document.createElement("LI");
+        singleSearchResultElement.className = "search-result-li";
+        let title = this.crateTitleOfSearchResultEntity(searchResultEntity);
+        singleSearchResultElement.appendChild(title);
+        let infoText = this.crateInfoTextOfSearchResultEntity(searchResultEntity);
+        if (infoText) {
+            singleSearchResultElement.appendChild(infoText);
+        }
+        let letLinkPart = this.crateLinkOfSearchResultEntity(searchResultEntity);
+        if (letLinkPart) {
+            singleSearchResultElement.appendChild(letLinkPart)
+        }
+        return singleSearchResultElement;
     }
 
     addResultToPage(data, location) {
-// todo: remove all those spaces!
-
-        var ulElement = document.getElementById(location);
-
-        // todo: create a method that receives the data, and returns an array of elements that should be appended to the ulElement
-        data.forEach(function (searchResultEntity) {
-
-            // method 1
-            let liElement = document.createElement("LI");
-            liElement.className = "search-result-li";
-            let titleElement = document.createElement("span");
-            let titleText = document.createTextNode(searchResultEntity.title);
-            titleElement.appendChild(titleText);
-            titleElement.className = "search-result-li-title";
-
-            liElement.appendChild(titleElement);
-
-            if (searchResultEntity.textinfo) {
-                // method 2
-                let pElement = document.createElement("p");
-                let pText = document.createTextNode(searchResultEntity.textinfo);
-                pElement.appendChild(pText);
-
-                liElement.appendChild(pElement);
-            }
-
-            let linkName = '';
-            if (searchResultEntity.link) {
-                // method 3
-                if (searchResultEntity.link.length > 10) {
-                    linkName = searchResultEntity.link.substring(0, 30) + '...';
-                } else {
-                    linkName = searchResultEntity.link;
-                }
-                let pElement = document.createElement("p");
-                // todo: use lower case A (a) please
-                let linkElement = document.createElement("A");
-                let linkText = document.createTextNode(linkName);
-                linkElement.setAttribute("href", searchResultEntity.link);
-                linkElement.setAttribute("target", "_blank"); // use this to open in a new tab
-                linkElement.appendChild(linkText);
-                pElement.appendChild(linkElement);
-                liElement.appendChild(pElement);
-            }
-
-
-            ulElement.appendChild(liElement);
-
-
-        });
-
+        let ulElement = document.getElementById(location);
+        // for each search result entity crate element and add to relevant list - define by the location parameter
+        data.forEach(searchResultEntity => ulElement.appendChild(this.addSingleSearchResult(searchResultEntity)));
     }
 
-    /**
-     * This method receive query and search that query on the freemusicarchive.
-     * The query result will display on the screen using the addResultToPage helping method.
-     * @param query - string to look for.
-     */
-    trackSearch(query) {
-        let request = makeXHRRequest(
-            {
-                method: 'GET',
-                url: `https://freemusicarchive.org/api/trackSearch?q='${query}&limit=10`,
-            });
-
-        request.then(function (data) {
-            //todo: make 'search-result-right-ul' into a const
-            this.addResultToPage(this.parseReturnData('freemusicarchive', JSON.parse(data)), 'search-result-right-ul');
-        }.bind(this));
-        request.catch(function (err) {
-            console.error('ERROR, failed to retrieve track details!', err.statusText);
-        });
+    // clears the current search results view
+    clearResultsLists(searchMoviesList, searchMusicsList) {
+        searchMoviesList.innerHTML = "";
+        searchMusicsList.innerHTML = "";
     }
-
-    /**
-     * This method receive query and search that query on the omdbapi.
-     * The query result will display on the screen using the addResultToPage helping method.
-     * @param query - string to look for.
-     */
-    movieSearch(query) {
-        let request = makeXHRRequest(
-            {
-                method: 'GET',
-                url: `http://www.omdbapi.com/?s='${query}&y=&plot=short&r=json`,
-            });
-
-        request.then(function (data) {
-            // todo: move 'search-result-left-ul' to const
-            this.addResultToPage(this.parseReturnData('omdbapi', JSON.parse(data)), 'search-result-left-ul');
-        }.bind(this));
-
-        request.catch(function (err) {
-            console.error('ERROR, failed to retrieve movies details from omdbapi!', err.statusText);
-        });
-    }
-
-    //add functionality to the Go! button.
-    constructor() {
-
-        document.getElementById('searchButton').onclick = function () {
-            let query = document.getElementById('query').value;
-
-            // clears the current view - todo: separate into another method + use one-liners
-            let searchElement = document.getElementById("search-result-left-ul");
-            searchElement.innerHTML = "";
-            // while (searchElement.firstChild) {
-            //     searchElement.removeChild(searchElement.firstChild);
-            // }
-
-            searchElement = document.getElementById('search-result-right-ul');
-            searchElement.innerHTML = "";
-            // while (searchElement.firstChild) {
-            //     searchElement.removeChild(searchElement.firstChild);
-            // }
-            // end of clear current view
-
-            this.trackSearch(query);
-            this.movieSearch(query);
-        }.bind(this);
-    }
-};
+}
