@@ -41,26 +41,13 @@ body{
     margin: 2em 2em;
     overflow-y: auto;
     position: relative;
-
+    flex-wrap: wrap;
 }
-
-/*.search-result-movie {*/
-    /*margin-right: 2em;*/
-    /*min-width: 45%;*/
-    /*max-width: 45%;*/
-
-/*}*/
-
-/*.search-result-music {*/
-    /*min-width: 45%;*/
-    /*max-width: 45%;*/
-/*}*/
 
 .search-result-ul {
     list-style-type: none;
     max-width: 45%;
-    border-bottom-style: solid;
-    border-bottom-color: lightslategray ;
+    border-bottom:solid lightslategray;
 }
 
 .search-result-li-title {
