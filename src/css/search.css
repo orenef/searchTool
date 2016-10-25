@@ -41,23 +41,13 @@ body{
     margin: 2em 2em;
     overflow-y: auto;
     position: relative;
-
-}
-
-.search-result-movie {
-    margin-right: 2em;
-    min-width: 45%;
-    max-width: 45%;
-
-}
-
-.search-result-music {
-    min-width: 45%;
-    max-width: 45%;
+    flex-wrap: wrap;
 }
 
 .search-result-ul {
     list-style-type: none;
+    max-width: 45%;
+    border-bottom:solid lightslategray;
 }
 
 .search-result-li-title {
@@ -71,10 +61,13 @@ body{
 .search-result-li {
     padding: 10px;
     word-wrap: break-word;
-
     opacity: 0;
     animation: new-item-animation .3s linear forwards;
-
+    display: inline-block;
+    width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 @keyframes new-item-animation {
